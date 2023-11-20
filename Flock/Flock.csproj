@@ -53,6 +53,8 @@
     <Compile Include="Client\Order.cs" />
     <Compile Include="Client\SearchParams.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="Exporter\CSVExporter.cs" />
+    <Compile Include="Exporter\Exporter.cs" />
     <Compile Include="Flock.cs" />
     <Compile Include="Job\JobData.cs" />
     <Compile Include="Job\JobDetails.cs" />

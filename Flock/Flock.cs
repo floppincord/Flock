@@ -6,6 +6,7 @@ using System.Threading;
 using Flock.Client;
 using Flock.Client.Client;
 using Flock.Client.Params;
+using Flock.Exporter;
 using Flock.Job;
 using Microsoft.Toolkit.Uwp.Notifications;
 
@@ -40,7 +41,8 @@ namespace Flock
                     if (shouldIgnore)
                         _visited.Add(query, new List<int>());
 
-                    exportToCSV(query, jobList);
+                    var exporter = new CSVExporter();
+                    exporter.ExportToFile(query, jobList);
                     foreach (var job in jobList)
                     {
                         if (_visited[query].Contains(job.JobId))
@@ -60,28 +62,6 @@ namespace Flock
                 Console.WriteLine("Next search will be in 30 seconds");
                 Thread.Sleep(30 * 1000);
             }
-        }
-
-        private void exportToCSV(String query, JobData[] datum)
-        {
-            var csvBuilder = new StringBuilder();
-
-            csvBuilder.Append("タイトル,タグ,Url,価格,支払方法,ユーザー名,ユーザーUrl\n");
-            foreach (var data in datum)
-            {
-                var details = data.Details;
-                var user = data.User;
-
-                var formattedDetails = string.Format("{0},{1},{2}",
-                    details.Title.Replace(",", ""), string.Join(" ", details.Tags), details.Url);
-                var formattedPayment = string.Format("{0},{1}", data.PaymentAmount.Replace(",", ""),
-                    data.PaymentHourlyMethod);
-                var formattedUser = string.Format("{0},{1}", user.Username.Replace(",", ""), user.Url);
-
-                csvBuilder.Append(string.Format("{0},{1},{2}\n", formattedDetails, formattedPayment, formattedUser));
-            }
-
-            File.WriteAllText(string.Format("jobs_{0}.csv", query), csvBuilder.ToString());
         }
 
         private void SendNotification(JobData job)
